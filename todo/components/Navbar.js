@@ -1,29 +1,8 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 
 const clientId =
   "985722162309-svdh6ecjfbdsjhkd4tffv7s7np9a8t37.apps.googleusercontent.com";
-
-const StyledNavbar = styled.nav`
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  color: tomato;
-  margin: auto;
-  width: 80%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: "Original Surfer";
-  font-size: 2rem;
-`;
-
-const ProfileWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
 
 export const Navbar = (props) => {
   const { source } = props;
@@ -54,7 +33,7 @@ export const Navbar = (props) => {
   };
 
   return (
-    <StyledNavbar>
+    <nav className="top-section">
       <h1>Mind Games</h1>
       {!userLoggedIn ? (
         <GoogleLogin
@@ -66,7 +45,7 @@ export const Navbar = (props) => {
           isSignedIn={true}
         />
       ) : (
-        <ProfileWrapper>
+        <div>
           <p>Welcome {username}</p>
           <img src={userProfilePicture} alt="" />
           <GoogleLogout
@@ -74,8 +53,8 @@ export const Navbar = (props) => {
             buttonText="Logout"
             onLogoutSuccess={logout}
           ></GoogleLogout>
-        </ProfileWrapper>
+        </div>
       )}
-    </StyledNavbar>
+    </nav>
   );
 };
