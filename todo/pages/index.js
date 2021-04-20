@@ -1,21 +1,9 @@
 import Head from "next/head";
 import styled from "styled-components";
+import { GoogleLogin } from "react-google-login";
+import { Navbar } from "../components/Navbar";
 
-const StyledNavbar = styled.nav`
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  color: tomato;
-  margin: auto;
-  width: 80%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: "Original Surfer";
-  font-size: 2rem;
-`;
-
-const SearchIcon = styled.svg`
+const StyledSearchIcon = styled.svg`
   position: absolute;
   width: 48px;
   right: 11%;
@@ -57,31 +45,6 @@ const StyledInput = styled.input`
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.95);
 `;
 
-const StyledButton = styled.button`
-  background-image: linear-gradient(
-    to right,
-    #085078 0%,
-    #85d8ce 51%,
-    #085078 100%
-  );
-  padding: 15px 45px;
-  text-align: center;
-  text-transform: uppercase;
-  transition: 0.5s;
-  background-size: 200% auto;
-  color: white;
-  box-shadow: 0 0 5px #eee;
-  font-size: 20px;
-  border-radius: 10px;
-  display: inline;
-  margin-left: 1rem;
-  &:hover {
-    background-position: right center;
-    color: #fff;
-    text-decoration: none;
-  }
-`;
-
 const HeroText = styled.div`
   position: absolute;
   left: 50%;
@@ -96,13 +59,7 @@ const HeroText = styled.div`
 export default function Home() {
   return (
     <Hero>
-      <StyledNavbar>
-        <h1>Mind Games</h1>
-        <div>
-          <StyledButton>Register</StyledButton>
-          <StyledButton>Sign in</StyledButton>
-        </div>
-      </StyledNavbar>
+      <Navbar />
       <HeroText>
         <h1>Train your brain</h1>
         <p>In the rain. Or in a train.</p>
@@ -112,22 +69,28 @@ export default function Home() {
           type="text"
           placeholder="Search for any game..."
         ></StyledInput>
-        <SearchIcon>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </SearchIcon>
+        <StyledSearchIcon>
+          <SearchIcon />
+        </StyledSearchIcon>
       </InputWrapper>
     </Hero>
   );
 }
+
+const SearchIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  );
+};
