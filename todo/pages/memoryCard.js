@@ -6,6 +6,7 @@ export const MemoryCard = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [cards, setCards] = useState(null);
   const [prevClickedCard, setPrevClickedCard] = useState(null);
+  const [clicksDisabled, setClicksDisabled] = useState(false);
 
   const flipCardsAfterTimeout = (prevClickedCard, clickedCardIndex) => {
     let newCards = {};
@@ -27,6 +28,7 @@ export const MemoryCard = () => {
       });
       return newCards;
     });
+    setClicksDisabled(false);
   };
 
   useEffect(() => {
@@ -57,6 +59,7 @@ export const MemoryCard = () => {
   }, [cardAmount]);
 
   const handleCardClick = (clickedCardIndex) => {
+    if (clicksDisabled) return;
     clickedCardIndex = Number(clickedCardIndex);
     if (cards[clickedCardIndex].cardState === "done") return;
     if (cards[clickedCardIndex].cardState === "visible") return;
@@ -122,6 +125,7 @@ export const MemoryCard = () => {
             prevClickedCard,
             clickedCardIndex
           );
+          setClicksDisabled(true);
           setPrevClickedCard(null);
           return newCards;
         });
