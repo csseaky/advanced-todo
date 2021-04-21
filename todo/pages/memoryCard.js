@@ -5,6 +5,29 @@ export const MemoryCard = () => {
   const [cardAmount, setCardAmount] = useState(4);
   const [gameStarted, setGameStarted] = useState(false);
   const [cards, setCards] = useState(null);
+  const [prevClickedCard, setPrevClickedCard] = useState(null);
+
+  const flipCardsAfterTimeout = (prevClickedCard, clickedCardIndex) => {
+    let newCards = {};
+    setCards((prevState) => {
+      Object.keys(prevState).map((cardIndex) => {
+        if (prevState[cardIndex] === prevState[prevClickedCard]) {
+          newCards[prevClickedCard] = {
+            ...prevState[prevClickedCard],
+            cardState: "hidden",
+          };
+        } else if (prevState[cardIndex] === prevState[clickedCardIndex]) {
+          newCards[clickedCardIndex] = {
+            ...prevState[clickedCardIndex],
+            cardState: "hidden",
+          };
+        } else {
+          newCards[cardIndex] = prevState[cardIndex];
+        }
+      });
+      return newCards;
+    });
+  };
 
   useEffect(() => {
     let cardsObject = {};
@@ -20,16 +43,91 @@ export const MemoryCard = () => {
     randomPictures = Array.from(randomPictures);
     let randomPictureIndex = 0;
     for (let i = 0; i < cardAmount; i += 2) {
-      cardsObject[cardsArray[i]] = randomPictures[randomPictureIndex];
-      cardsObject[cardsArray[i + 1]] = randomPictures[randomPictureIndex];
+      cardsObject[cardsArray[i]] = {
+        picture: randomPictures[randomPictureIndex],
+        cardState: "hidden",
+      };
+      cardsObject[cardsArray[i + 1]] = {
+        picture: randomPictures[randomPictureIndex],
+        cardState: "hidden",
+      };
       randomPictureIndex++;
     }
-    let cardsArrayFromObject = [];
-    Object.keys(cardsObject).forEach((item, index) => {
-      cardsArrayFromObject.push(cardsObject[item]);
-    });
-    setCards(cardsArrayFromObject);
+    setCards(cardsObject);
   }, [cardAmount]);
+
+  const handleCardClick = (clickedCardIndex) => {
+    clickedCardIndex = Number(clickedCardIndex);
+    if (cards[clickedCardIndex].cardState === "done") return;
+    if (cards[clickedCardIndex].cardState === "visible") return;
+    if (prevClickedCard === null) {
+      setPrevClickedCard(clickedCardIndex);
+      setCards((prevState) => {
+        let newCards = {};
+        Object.keys(prevState).map((cardIndex) => {
+          if (prevState[cardIndex] === prevState[clickedCardIndex]) {
+            newCards[clickedCardIndex] = {
+              ...cards[clickedCardIndex],
+              cardState: "visible",
+            };
+          } else {
+            newCards[cardIndex] = prevState[cardIndex];
+          }
+        });
+        return newCards;
+      });
+    } else {
+      if (cards[prevClickedCard].picture === cards[clickedCardIndex].picture) {
+        setCards((prevState) => {
+          let newCards = {};
+          Object.keys(prevState).map((cardIndex) => {
+            if (prevState[cardIndex] === prevState[clickedCardIndex]) {
+              newCards[clickedCardIndex] = {
+                ...prevState[clickedCardIndex],
+                cardState: "done",
+              };
+            } else if (prevState[cardIndex] === prevState[prevClickedCard]) {
+              newCards[prevClickedCard] = {
+                ...prevState[prevClickedCard],
+                cardState: "done",
+              };
+            } else {
+              newCards[cardIndex] = prevState[cardIndex];
+            }
+          });
+          setPrevClickedCard(null);
+          return newCards;
+        });
+      } else {
+        setCards((prevState) => {
+          let newCards = {};
+          Object.keys(prevState).map((cardIndex) => {
+            if (prevState[cardIndex] === prevState[prevClickedCard]) {
+              newCards[prevClickedCard] = {
+                ...prevState[prevClickedCard],
+                cardState: "visible",
+              };
+            } else if (prevState[cardIndex] === prevState[clickedCardIndex]) {
+              newCards[clickedCardIndex] = {
+                ...prevState[clickedCardIndex],
+                cardState: "visible",
+              };
+            } else {
+              newCards[cardIndex] = prevState[cardIndex];
+            }
+          });
+          setTimeout(
+            flipCardsAfterTimeout,
+            1500,
+            prevClickedCard,
+            clickedCardIndex
+          );
+          setPrevClickedCard(null);
+          return newCards;
+        });
+      }
+    }
+  };
   return (
     <div>
       <Navbar navbarIsStatic="true"></Navbar>
@@ -59,8 +157,12 @@ export const MemoryCard = () => {
             </div>
           ) : (
             <div className="game">
-              {cards.map((cardNumber, index) => {
-                return <Card id={index} number={cardNumber} />;
+              {Object.keys(cards).map((item, index) => {
+                return (
+                  <div className="card" onClick={(e) => handleCardClick(item)}>
+                    {<CardImage item={cards[item]} />}
+                  </div>
+                );
               })}
             </div>
           )}
@@ -84,15 +186,21 @@ export const MemoryCard = () => {
 
 export default MemoryCard;
 
-const Card = ({ number }) => {
-  console.log(number);
-  return (
-    <div className="card">
+const CardImage = (props) => {
+  const { cardState, picture } = props.item;
+  if (cardState === "visible")
+    return (
       <img
-        src={`cardMatch/flowers/${number}.png`}
+        src={`/cardMatch/${`flowers/${picture}.png`}`}
         alt=""
         className="card-image"
       />
-    </div>
-  );
+    );
+  else if (cardState === "hidden") {
+    return <img src={"/cardMatch/hidden.png"} alt="" className="card-image" />;
+  } else {
+    return (
+      <img src={"/cardMatch/download.jpeg"} alt="" className="card-image" />
+    );
+  }
 };

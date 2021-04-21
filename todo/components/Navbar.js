@@ -27,6 +27,8 @@ export const Navbar = (props) => {
       return;
     }
     setUserLoggedIn(true);
+    setUserProfilePicture(response.profileObj.imageUrl);
+    setUsername(response.profileObj.name);
     localStorage.setItem("userLoggedIn", true);
     localStorage.setItem("userProfilePicture", response.profileObj.imageUrl);
     localStorage.setItem("username", response.profileObj.name);
