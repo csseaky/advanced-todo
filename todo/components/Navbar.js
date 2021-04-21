@@ -5,7 +5,7 @@ const clientId =
   "985722162309-svdh6ecjfbdsjhkd4tffv7s7np9a8t37.apps.googleusercontent.com";
 
 export const Navbar = (props) => {
-  const { source } = props;
+  const { navbarIsStatic } = props;
   const [userLoggedIn, setUserLoggedIn] = useState(null);
   const [userProfilePicture, setUserProfilePicture] = useState(null);
   const [username, setUsername] = useState(null);
@@ -33,7 +33,9 @@ export const Navbar = (props) => {
   };
 
   return (
-    <nav className="top-section">
+    <nav
+      className={`top-section ${navbarIsStatic ? "top-section-static" : null}`}
+    >
       <h1>Mind Games</h1>
       {!userLoggedIn ? (
         <GoogleLogin
@@ -45,7 +47,7 @@ export const Navbar = (props) => {
           isSignedIn={true}
         />
       ) : (
-        <div>
+        <div className="profile-wrapper">
           <p>Welcome {username}</p>
           <img src={userProfilePicture} alt="" />
           <GoogleLogout
